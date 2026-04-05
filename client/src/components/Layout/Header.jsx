@@ -43,7 +43,7 @@ export default function Header() {
           <button
             onClick={() => setRole('Admin')}
             className={cn(
-              "flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300",
+              "flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer",
               role === 'Admin' ? "bg-primary/20 text-primary shadow-md border-primary/30" : "text-textMuted hover:text-textMain border-transparent"
             )}
           >

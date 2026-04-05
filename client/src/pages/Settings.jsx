@@ -118,7 +118,7 @@ export default function Settings() {
                 </div>
                 <button 
                   onClick={toggleTheme}
-                  className="p-2 bg-surface-2 border border-borderLight rounded-lg hover:border-primary transition-colors text-textMain"
+                  className="p-2 bg-surface-2 border border-borderLight rounded-lg hover:border-primary transition-colors text-textMain cursor-pointer"
                 >
                   {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                 </button>

@@ -31,7 +31,7 @@ export default function AuthLayout({ title, subtitle, children }) {
           </div>
           <button 
             onClick={toggleTheme}
-            className="p-2 text-textDim hover:text-textMain transition-colors rounded-lg bg-black/5 dark:bg-white/5 border border-borderLight hover:border-border"
+            className="p-2 text-textDim hover:text-textMain transition-colors rounded-lg bg-black/5 dark:bg-white/5 border border-borderLight hover:border-border cursor-pointer"
             title="Toggle Theme"
           >
             {theme === 'dark' ? <Sun className="w-5 h-5 text-white" /> : <Moon className="w-5 h-5 text-slate-800" />}
