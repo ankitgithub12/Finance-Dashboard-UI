@@ -12,16 +12,25 @@ import ResetPassword from './pages/auth/ResetPassword';
 
 // Guards
 import ProtectedRoute from './components/ProtectedRoute';
+import useAuthStore from './store/authStore';
+
+function PublicRoute({ children }) {
+  const { isAuthenticated } = useAuthStore();
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* ─── Auth Routes (public) ──────────────────────────────────── */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
         {/* ─── Protected App Routes ──────────────────────────────────── */}
         <Route

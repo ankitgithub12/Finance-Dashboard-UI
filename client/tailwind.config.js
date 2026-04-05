@@ -7,14 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0f172a',    // slate-900
-        surface: '#1e293b',       // slate-800
-        primary: '#3b82f6',       // blue-500
-        secondary: '#10b981',     // emerald-500
-        accent: '#f43f5e',        // rose-500
-        textMain: '#f8fafc',      // slate-50
-        textMuted: '#94a3b8',     // slate-400
-        borderLight: '#334155'    // slate-700
+        background: 'var(--bg)',
+        surface: 'var(--surface)',
+        surface2: 'var(--surface-2)',
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        accent: 'var(--accent)',
+        textMain: 'var(--text-main)',
+        textMuted: 'var(--text-muted)',
+        borderLight: 'var(--border-light)',
+        border: 'var(--border)',
+        textDim: 'var(--text-dim)'
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

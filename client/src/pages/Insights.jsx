@@ -7,11 +7,11 @@ function InsightCard({ title, value, description, icon: Icon, colorClass, delayM
   return (
     <div className="glass-card p-6 flex items-start space-x-4 card-enter" style={{ animationDelay: `${delayMs}ms` }}>
       <div className={`p-3 rounded-xl ${colorClass}`}>
-        <Icon className="w-6 h-6 text-white" />
+        <Icon className="w-6 h-6 text-textMain" />
       </div>
       <div>
         <p className="text-sm font-medium text-textMuted mb-1">{title}</p>
-        <h4 className="text-xl font-bold text-white mb-2">{value}</h4>
+        <h4 className="text-xl font-bold text-textMain mb-2">{value}</h4>
         <p className="text-xs text-textMuted">{description}</p>
       </div>
     </div>
@@ -20,6 +20,7 @@ function InsightCard({ title, value, description, icon: Icon, colorClass, delayM
 
 export default function Insights() {
   const transactions = useFinanceStore((state) => state.transactions);
+  const theme = useFinanceStore((state) => state.theme);
 
   const { highestExpenseCategory, savingsRate, barData } = useMemo(() => {
     let totalIncome = 0;
@@ -73,7 +74,7 @@ export default function Insights() {
 
   return (
     <div className="space-y-6 page-enter">
-      <h2 className="text-2xl font-bold text-white fade-in">Financial Insights</h2>
+      <h2 className="text-2xl font-bold text-textMain fade-in">Financial Insights</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <InsightCard 
@@ -111,17 +112,22 @@ export default function Insights() {
       </div>
 
       <div className="glass-panel p-6 mt-8 h-96 flex flex-col card-enter" style={{ animationDelay: '240ms' }}>
-          <h3 className="text-lg font-semibold text-white mb-6">Income vs Expenses (Monthly)</h3>
+          <h3 className="text-lg font-semibold text-textMain mb-6">Income vs Expenses (Monthly)</h3>
           <div className="flex-1 min-h-0">
             {barData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barData} margin={{ top: 20, right: 30, left: -10, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val}`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? '#334155' : '#e2e8f0'} vertical={false} />
+                  <XAxis dataKey="name" stroke={theme === 'dark' ? '#94a3b8' : '#64748b'} fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke={theme === 'dark' ? '#94a3b8' : '#64748b'} fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val}`} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '8px', color: '#f8fafc' }}
-                    cursor={{ fill: '#334155', opacity: 0.4 }}
+                    contentStyle={{ 
+                      backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff', 
+                      borderColor: theme === 'dark' ? '#334155' : '#e2e8f0', 
+                      borderRadius: '8px', 
+                      color: theme === 'dark' ? '#f8fafc' : '#0f172a'
+                    }}
+                    cursor={{ fill: theme === 'dark' ? '#334155' : '#e2e8f0', opacity: theme === 'dark' ? 0.4 : 0.6 }}
                   />
                   <Bar dataKey="Income" fill="#10b981" radius={[4, 4, 0, 0]} barSize={30} />
                   <Bar dataKey="Expense" fill="#f43f5e" radius={[4, 4, 0, 0]} barSize={30} />

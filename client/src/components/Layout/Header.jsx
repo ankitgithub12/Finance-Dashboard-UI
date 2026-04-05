@@ -3,11 +3,13 @@ import useAuthStore from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { UserCircle, Bell, Shield, Eye, LogOut, Sun, Moon } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useState } from 'react';
 
 export default function Header() {
   const { role, setRole, theme, toggleTheme } = useFinanceStore();
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -28,7 +30,7 @@ export default function Header() {
             onClick={() => setRole('Viewer')}
             className={cn(
               "flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300",
-              role === 'Viewer' ? "bg-surface text-white shadow-md" : "text-textMuted hover:text-white"
+              role === 'Viewer' ? "bg-surface text-textMain shadow-md border-border" : "text-textMuted hover:text-textMain border-transparent"
             )}
           >
             <Eye className="w-4 h-4" />
@@ -38,7 +40,7 @@ export default function Header() {
             onClick={() => setRole('Admin')}
             className={cn(
               "flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300",
-              role === 'Admin' ? "bg-primary/20 text-primary shadow-md" : "text-textMuted hover:text-white"
+              role === 'Admin' ? "bg-primary/20 text-primary shadow-md border-primary/30" : "text-textMuted hover:text-textMain border-transparent"
             )}
           >
             <Shield className="w-4 h-4" />
@@ -46,14 +48,35 @@ export default function Header() {
           </button>
         </div>
 
-        <button className="relative p-2 text-textMuted hover:text-white transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full border border-surface"></span>
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative p-2 text-textMuted hover:text-textMain transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight"
+          >
+            <Bell className="w-5 h-5" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full border border-surface"></span>
+          </button>
+          
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-72 glass-panel p-4 z-50 animate-in fade-in slide-in-from-top-4 duration-200">
+              <h4 className="text-sm font-bold text-textMain border-b border-borderLight pb-2 mb-2">Notifications</h4>
+              <div className="space-y-3">
+                <div className="text-sm">
+                  <p className="text-textMain font-medium">New Feature: Exports</p>
+                  <p className="text-textMuted text-xs mt-1">You can now export your transactions to CSV/JSON.</p>
+                </div>
+                <div className="text-sm">
+                  <p className="text-textMain font-medium">Unusual spending</p>
+                  <p className="text-textMuted text-xs mt-1">Found a higher than average transaction in Housing.</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <button 
           onClick={toggleTheme}
-          className="p-2 text-textMuted hover:text-white transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight"
+          className="p-2 text-textMuted hover:text-textMain transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight"
           title="Toggle Theme"
         >
           {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -61,8 +84,8 @@ export default function Header() {
 
         <div className="flex items-center space-x-3 pl-4 border-l border-borderLight/50">
           <div className="text-right hidden md:block">
-            <p className="text-sm font-medium text-white">{user?.name || 'User'}</p>
-            <p className="text-xs text-textMuted">{role}</p>
+             <p className="text-sm font-medium text-textMain">{user?.name || 'User'}</p>
+             <p className="text-xs text-textMuted">{role}</p>
           </div>
           <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent p-[2px]">
             <div className="w-full h-full bg-surface rounded-full flex items-center justify-center">

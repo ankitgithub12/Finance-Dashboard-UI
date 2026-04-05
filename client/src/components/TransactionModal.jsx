@@ -66,16 +66,16 @@ export default function TransactionModal({ isOpen, onClose, editingTransaction =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm dark:bg-background/80">
       <div className="glass-panel w-full max-w-md p-6 relative animate-in fade-in zoom-in-95 duration-200">
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-textMuted hover:text-white transition-colors bg-surface/50 rounded-full"
+          className="absolute top-4 right-4 p-1.5 text-textMuted hover:text-textMain transition-colors bg-surface/50 rounded-full"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h3 className="text-xl font-bold text-white mb-6">
+        <h3 className="text-xl font-bold text-textMain mb-6">
           {editingTransaction ? 'Edit Transaction' : 'Add Transaction'}
         </h3>
 
@@ -166,7 +166,7 @@ export default function TransactionModal({ isOpen, onClose, editingTransaction =
                 required
                 value={formData.date}
                 onChange={e => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                className="input-field [color-scheme:dark]"
+                className="input-field"
               />
             </div>
           </div>

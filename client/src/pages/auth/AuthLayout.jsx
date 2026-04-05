@@ -1,4 +1,5 @@
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, Sun, Moon } from 'lucide-react';
+import { useFinanceStore } from '../../store/useFinanceStore';
 import './auth.css';
 
 /**
@@ -6,6 +7,7 @@ import './auth.css';
  * Provides the animated gradient background, floating card, and branding.
  */
 export default function AuthLayout({ title, subtitle, children }) {
+  const { theme, toggleTheme } = useFinanceStore();
   return (
     <div className="auth-root">
       {/* Animated background blobs */}
@@ -20,11 +22,20 @@ export default function AuthLayout({ title, subtitle, children }) {
 
       <div className="auth-container">
         {/* Brand header */}
-        <div className="auth-brand">
-          <div className="auth-brand__logo">
-            <TrendingUp size={22} strokeWidth={2.5} />
+        <div className="auth-brand w-full justify-between pr-2">
+          <div className="flex items-center gap-2">
+            <div className="auth-brand__logo">
+              <TrendingUp size={22} strokeWidth={2.5} />
+            </div>
+            <span className="auth-brand__name">NexusFin</span>
           </div>
-          <span className="auth-brand__name">FinanceIQ</span>
+          <button 
+            onClick={toggleTheme}
+            className="p-2 text-textDim hover:text-textMain transition-colors rounded-lg bg-black/5 dark:bg-white/5 border border-borderLight hover:border-border"
+            title="Toggle Theme"
+          >
+            {theme === 'dark' ? <Sun className="w-5 h-5 text-white" /> : <Moon className="w-5 h-5 text-slate-800" />}
+          </button>
         </div>
 
         {/* Card */}
