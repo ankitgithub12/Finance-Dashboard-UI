@@ -4,12 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { UserCircle, Bell, Shield, Eye, LogOut, Sun, Moon } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useState } from 'react';
+import { useNotificationStore } from '../../store/useNotificationStore';
 
 export default function Header() {
   const { role, setRole, theme, toggleTheme } = useFinanceStore();
   const { user, logout } = useAuthStore();
+  const { notifications, markAllAsRead, markAsRead } = useNotificationStore();
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleLogout = async () => {
     await logout();
@@ -54,21 +58,39 @@ export default function Header() {
             className="relative p-2 text-textMuted hover:text-textMain transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight"
           >
             <Bell className="w-5 h-5" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full border border-surface"></span>
+            {unreadCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full border border-surface"></span>
+            )}
           </button>
           
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-72 glass-panel p-4 z-50 animate-in fade-in slide-in-from-top-4 duration-200">
-              <h4 className="text-sm font-bold text-textMain border-b border-borderLight pb-2 mb-2">Notifications</h4>
-              <div className="space-y-3">
-                <div className="text-sm">
-                  <p className="text-textMain font-medium">New Feature: Exports</p>
-                  <p className="text-textMuted text-xs mt-1">You can now export your transactions to CSV/JSON.</p>
-                </div>
-                <div className="text-sm">
-                  <p className="text-textMain font-medium">Unusual spending</p>
-                  <p className="text-textMuted text-xs mt-1">Found a higher than average transaction in Housing.</p>
-                </div>
+            <div className="absolute right-0 mt-2 w-80 glass-panel p-4 z-50 animate-in fade-in slide-in-from-top-4 duration-200 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-borderLight pb-2 mb-3">
+                <h4 className="text-sm font-bold text-textMain">Notifications {unreadCount > 0 && `(${unreadCount})`}</h4>
+                {unreadCount > 0 && (
+                  <button onClick={markAllAsRead} className="text-[11px] text-primary hover:underline font-medium">Mark all read</button>
+                )}
+              </div>
+              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 select-none">
+                {notifications.length === 0 ? (
+                  <p className="text-sm text-textMuted text-center py-4">No notifications yet.</p>
+                ) : (
+                  notifications.map(n => (
+                    <div 
+                      key={n.id} 
+                      onClick={() => markAsRead(n.id)}
+                      className={cn(
+                        "text-sm p-2 -mx-2 rounded-lg cursor-pointer transition-colors relative",
+                        !n.read ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-surface-2"
+                      )}
+                    >
+                      {!n.read && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0.5 bg-primary rounded-r-full" />}
+                      <p className={cn("font-medium", !n.read ? "text-textMain" : "text-textMuted")}>{n.title}</p>
+                      <p className="text-xs mt-1 text-textMuted line-clamp-2">{n.message}</p>
+                      <p className="text-[10px] text-textDim mt-2">{new Date(n.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}

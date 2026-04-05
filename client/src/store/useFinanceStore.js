@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { mockAPI } from '../utils/mockApiService';
+import { useNotificationStore } from './useNotificationStore';
 
 export const useFinanceStore = create(
   persist(
@@ -44,6 +45,10 @@ export const useFinanceStore = create(
             transactions: [res.data, ...state.transactions],
             isLoading: false
           }));
+          useNotificationStore.getState().addNotification(
+            'Transaction Added', 
+            `${transaction.type === 'Income' ? '+$' : '-$'}${transaction.amount} for ${transaction.category}`
+          );
         } catch (error) {
            console.error("Failed to add:", error);
            set({ isLoading: false });
@@ -60,6 +65,10 @@ export const useFinanceStore = create(
             ),
             isLoading: false
           }));
+          useNotificationStore.getState().addNotification(
+            'Transaction Updated', 
+            `Successfully modified "${updated.description}"`
+          );
         } catch (error) {
            console.error("Failed to update:", error);
            set({ isLoading: false });
@@ -74,6 +83,10 @@ export const useFinanceStore = create(
             transactions: state.transactions.filter((t) => t.id !== id),
             isLoading: false
           }));
+          useNotificationStore.getState().addNotification(
+            'Transaction Deleted', 
+            'The record has been permanently removed.'
+          );
         } catch (error) {
           console.error("Failed to delete:", error);
           set({ isLoading: false });
