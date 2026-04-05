@@ -239,7 +239,9 @@ export default function Settings() {
                 <button 
                   type="submit" 
                   disabled={isLoading || (passwordForm.newPassword.length > 0 && !isNewPasswordValid) || (passwordForm.confirmNewPassword.length > 0 && !passwordsMatch)}
-                  className="btn-primary w-full sm:w-auto px-8 py-2.5 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary w-full sm:w-auto px-8 py-2.5 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed
+                  cursor-pointer
+                  "
                 >
                   {isLoading ? 'Updating...' : 'Update Password'}
                 </button>
