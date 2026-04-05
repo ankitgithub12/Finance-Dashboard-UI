@@ -4,6 +4,11 @@ A stunning, highly-interactive Personal Finance Dashboard designed specifically 
 
 **Note on Scope:** While the assignment requested a frontend-only implementation, I have provided a completely functional **Node.js/Express Backend** with MongoDB integration and JWT Authentication to demonstrate full-stack competency. However, the frontend remains completely isolated in `./client` and can run purely using the `mockApiService`.
 
+## 🌐 Live Deployment
+
+- **Frontend (Client):** [https://finance-dashboard-ui-1-6jnz.onrender.com/](https://finance-dashboard-ui-1-6jnz.onrender.com/)
+- **Backend (API):** [https://finance-dashboard-ui-17v5.onrender.com/](https://finance-dashboard-ui-17v5.onrender.com/)
+
 ---
 
 ## 🚀 Core Requirements (Assignment Checklist)
