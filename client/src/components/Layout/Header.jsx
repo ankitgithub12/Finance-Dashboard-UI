@@ -33,7 +33,7 @@ export default function Header() {
           <button
             onClick={() => setRole('Viewer')}
             className={cn(
-              "flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300",
+              "flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer",
               role === 'Viewer' ? "bg-surface text-textMain shadow-md border-border" : "text-textMuted hover:text-textMain border-transparent"
             )}
           >
@@ -55,7 +55,7 @@ export default function Header() {
         <div className="relative">
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2 text-textMuted hover:text-textMain transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight"
+            className="relative p-2 text-textMuted hover:text-textMain transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight cursor-pointer"
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
@@ -98,7 +98,7 @@ export default function Header() {
 
         <button 
           onClick={toggleTheme}
-          className="p-2 text-textMuted hover:text-textMain transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight"
+          className="p-2 text-textMuted hover:text-textMain transition-colors rounded-lg hover:bg-surface-2 border border-transparent hover:border-borderLight cursor-pointer"
           title="Toggle Theme"
         >
           {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -109,7 +109,7 @@ export default function Header() {
              <p className="text-sm font-medium text-textMain">{user?.name || 'User'}</p>
              <p className="text-xs text-textMuted">{role}</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent p-[2px]">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent p-[2px] cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate('/settings')}>
             <div className="w-full h-full bg-surface rounded-full flex items-center justify-center">
                <UserCircle className="w-6 h-6 text-textMain" />
             </div>
@@ -117,7 +117,7 @@ export default function Header() {
           <button
             onClick={handleLogout}
             title="Sign out"
-            className="p-2 text-textMuted hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/10"
+            className="p-2 text-textMuted hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/10 cursor-pointer"
           >
             <LogOut className="w-5 h-5" />
           </button>

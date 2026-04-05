@@ -242,4 +242,40 @@ const logout = async (req, res) => {
   res.status(200).json({ success: true, message: 'Logged out successfully.' });
 };
 
-module.exports = { signup, login, forgotPassword, resetPassword, getMe, logout };
+// ─── @route  PUT /api/auth/update-password ──────────────────────────────────────
+const updatePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // Fetch user with password explicitly (since it is excluded by default)
+    const user = await User.findById(req.user.id).select('+password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+
+    // Verify current password matches exactly
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Current password is incorrect.',
+        errors: { currentPassword: 'Incorrect password.' },
+      });
+    }
+
+    // Assign and save new password; Mongoose pre-save hook handles bcrypt automatically
+    user.password = newPassword;
+    await user.save();
+
+    // Re-issue token so they aren't logged out (optional but highly recommended for UX)
+    sendTokenResponse(user, 200, res);
+  } catch (error) {
+    console.error('Update Password Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while updating the password.',
+    });
+  }
+};
+
+module.exports = { signup, login, forgotPassword, resetPassword, getMe, logout, updatePassword };

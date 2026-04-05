@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, ArrowRightLeft, PieChart, Wallet } from 'lucide-react';
+import { LayoutDashboard, ArrowRightLeft, PieChart, Wallet, Settings as SettingsIcon } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export default function Sidebar() {
@@ -7,6 +7,7 @@ export default function Sidebar() {
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Transactions', path: '/transactions', icon: ArrowRightLeft },
     { name: 'Insights', path: '/insights', icon: PieChart },
+    { name: 'Settings', path: '/settings', icon: SettingsIcon },
   ];
 
   return (

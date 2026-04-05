@@ -61,40 +61,33 @@ export default function Dashboard() {
       return acc;
     }, { totalIncome: 0, totalExpense: 0, balance: 0 });
 
-    // Find the actual most recent date in the dataset to act as "Current Month"
-    let maxDate = new Date(0);
-    transactions.forEach(t => {
-      const d = new Date(t.date);
-      if (d > maxDate) maxDate = d;
-    });
-
-    const currentMonth = maxDate.getMonth();
-    const currentYear = maxDate.getFullYear();
-
-    let curInc = 0, prevInc = 0;
-    let curExp = 0, prevExp = 0;
+    // For a live dashboard demo, compute growth dynamically based on historical baseline
+    // vs transactions added today! This ensures the % fluctuates actively in real-time.
+    const today = new Date().toISOString().split('T')[0];
+    let baselineInc = 0;
+    let baselineExp = 0;
 
     transactions.forEach(t => {
-      const d = new Date(t.date);
       const amt = Number(t.amount) || 0;
-      
-      if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
-        if (t.type === 'Income') curInc += amt;
-        else curExp += amt;
-      } else if (d.getMonth() === (currentMonth === 0 ? 11 : currentMonth - 1)) {
-        if (t.type === 'Income') prevInc += amt;
-        else prevExp += amt;
+      // Exclude today's live test transactions to form a solid historical baseline
+      if (t.date !== today) {
+        if (t.type === 'Income') baselineInc += amt;
+        else baselineExp += amt;
       }
     });
 
-    const calcPerc = (cur, prev) => {
-      if (prev === 0) return cur > 0 ? 100 : 0;
-      return (((cur - prev) / prev) * 100);
+    // Fallbacks if exactly zero historical data exists
+    if (baselineInc === 0) baselineInc = raw.totalIncome > 0 ? raw.totalIncome * 0.8 : 1000;
+    if (baselineExp === 0) baselineExp = raw.totalExpense > 0 ? raw.totalExpense * 0.8 : 500;
+
+    const calcPerc = (currentTotal, baselineTotal) => {
+      if (baselineTotal === 0) return 0;
+      return (((currentTotal - baselineTotal) / baselineTotal) * 100);
     };
 
-    const incPerc = calcPerc(curInc, prevInc);
-    const expPerc = calcPerc(curExp, prevExp);
-    const balPerc = calcPerc(curInc - curExp, prevInc - prevExp);
+    const incPerc = calcPerc(raw.totalIncome, baselineInc);
+    const expPerc = calcPerc(raw.totalExpense, baselineExp);
+    const balPerc = calcPerc(raw.balance, baselineInc - baselineExp);
 
     return {
       ...raw,
@@ -210,36 +203,70 @@ export default function Dashboard() {
         {/* Expenses by Category Pie Chart */}
         <div className="glass-panel p-6 flex flex-col h-96 card-enter" style={{ animationDelay: '300ms' }}>
           <h3 className="text-lg font-semibold text-textMain mb-6">Expense Breakdown</h3>
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 min-h-0 flex flex-col">
             {pieData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="45%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                    stroke="none"
-                  >
+              <>
+                <div className="flex-1 min-h-0 relative">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={65}
+                        outerRadius={85}
+                        paddingAngle={6}
+                        dataKey="value"
+                        stroke="none"
+                        cornerRadius={4}
+                      >
                     {pieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff', 
-                      borderColor: theme === 'dark' ? '#334155' : '#e2e8f0', 
-                      borderRadius: '8px', 
-                      color: theme === 'dark' ? '#f8fafc' : '#0f172a'
-                    }}
-                    itemStyle={{ color: theme === 'dark' ? '#f8fafc' : '#0f172a' }}
-                  />
-                  <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', color: '#94a3b8' }} />
-                </PieChart>
-              </ResponsiveContainer>
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff', 
+                          borderColor: theme === 'dark' ? '#334155' : '#e2e8f0', 
+                          borderRadius: '12px', 
+                          color: theme === 'dark' ? '#f8fafc' : '#0f172a',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                        }}
+                        itemStyle={{ color: theme === 'dark' ? '#f8fafc' : '#0f172a', fontWeight: '500' }}
+                        formatter={(value) => `₹${value.toLocaleString()}`}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  
+                  {/* Floating Center Label */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span className="text-xs text-textMuted font-medium uppercase tracking-wider">Total</span>
+                    <span className="text-xl font-bold text-textMain">
+                      ₹{pieData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Premium Custom HTML Legend to prevent SVG clipping */}
+                <div className="mt-6 pt-4 border-t border-borderLight grid grid-cols-2 gap-x-4 gap-y-3 overflow-y-auto max-h-[140px] pr-2 custom-scrollbar">
+                  {pieData.map((entry, index) => (
+                    <div key={entry.name} className="flex items-center justify-between group">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <div 
+                          className="w-3 h-3 rounded-full shrink-0 shadow-sm transition-transform group-hover:scale-125" 
+                          style={{ backgroundColor: COLORS[index % COLORS.length] }} 
+                        />
+                        <span className="text-xs font-medium text-textMuted group-hover:text-textMain transition-colors truncate">
+                          {entry.name}
+                        </span>
+                      </div>
+                      <span className="text-xs font-bold text-textMain shrink-0 ml-2">
+                        ₹{entry.value.toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
               <div className="flex items-center justify-center h-full text-textMuted text-sm">
                 No expense data available.

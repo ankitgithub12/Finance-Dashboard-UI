@@ -8,6 +8,7 @@ const {
   resetPassword,
   getMe,
   logout,
+  updatePassword,
 } = require('../controllers/authController');
 
 const { protect } = require('../middleware/auth');
@@ -17,6 +18,7 @@ const {
   loginRules,
   forgotPasswordRules,
   resetPasswordRules,
+  updatePasswordRules,
 } = require('../validators/authValidators');
 
 // Public routes
@@ -28,5 +30,6 @@ router.post('/reset-password/:token', resetPasswordRules, validate, resetPasswor
 // Protected routes
 router.get('/me', protect, getMe);
 router.post('/logout', protect, logout);
+router.put('/update-password', protect, updatePasswordRules, validate, updatePassword);
 
 module.exports = router;

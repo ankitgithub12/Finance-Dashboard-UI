@@ -76,6 +76,24 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
+  // ─── Update Password ─────────────────────────────────────────────────────
+  updatePassword: async (passwords) => {
+    set({ isLoading: true, error: null });
+    try {
+      const res = await authAPI.updatePassword(passwords);
+      const { token: authToken, user } = res.data;
+      localStorage.setItem('authToken', authToken);
+      localStorage.setItem('authUser', JSON.stringify(user));
+      set({ user, token: authToken, isLoading: false });
+      return { success: true };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Password update failed.';
+      const errors = err.response?.data?.errors || {};
+      set({ isLoading: false, error: message });
+      return { success: false, message, errors };
+    }
+  },
+
   // ─── Logout ──────────────────────────────────────────────────────────────
   logout: async () => {
     try { await authAPI.logout(); } catch (_) {}

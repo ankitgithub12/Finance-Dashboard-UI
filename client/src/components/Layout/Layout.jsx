@@ -9,20 +9,37 @@ export default function Layout() {
   const { addNotification } = useNotificationStore();
 
   useEffect(() => {
-    // Simulated Backend Push Engine
-    const timers = [];
+    // Advanced Spontaneous Backend Push Simulation Engine
+    const mockServerEvents = [
+      { title: 'Security Alert', message: 'New device logged in from New York, USA.' },
+      { title: 'Market Insight', message: 'Tech stocks are up 2.4% today. Review your portfolio.' },
+      { title: 'Budget Warning', message: 'You have reached 80% of your Entertainment budget.' },
+      { title: 'Subscription Upcoming', message: 'Netflix ($15.99) will be charged in 3 days.' },
+      { title: 'Goal Reached!', message: 'Congratulations! You hit your monthly savings target.' },
+      { title: 'System Maintenance', message: 'NexusFin servers will be down for 5 minutes at midnight.' }
+    ];
 
-    // Push an alert after 30 seconds to demonstrate Real-Time capabilities
-    timers.push(setTimeout(() => {
-      addNotification('Security Alert', 'New login detected from simulated IP 192.168.x.x');
-    }, 15000));
+    // Fire a random notification every 45 to 90 seconds
+    const loopSimulation = () => {
+      const waitTime = Math.floor(Math.random() * (90000 - 45000 + 1)) + 45000;
+      
+      return setTimeout(() => {
+        // Pick a random event
+        const event = mockServerEvents[Math.floor(Math.random() * mockServerEvents.length)];
+        addNotification(event.title, event.message);
+        
+        // recursively loop
+        timerId = loopSimulation();
+      }, waitTime);
+    };
 
-    // Push an actionable insight after 60 seconds
-    timers.push(setTimeout(() => {
-      addNotification('Market Insight', 'Tech stocks are up. Review your portfolio allocations.');
-    }, 45000));
+    // Give an initial quick demo notification after 15 seconds
+    let timerId = setTimeout(() => {
+      addNotification('NexusFin Sync', 'Your latest bank transactions have been securely synced.');
+      timerId = loopSimulation();
+    }, 15000);
 
-    return () => timers.forEach(clearTimeout);
+    return () => clearTimeout(timerId);
   }, [addNotification]);
   return (
     <div className="flex h-screen bg-background text-textMain overflow-hidden">

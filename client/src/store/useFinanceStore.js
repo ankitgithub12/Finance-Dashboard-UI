@@ -46,12 +46,12 @@ export const useFinanceStore = create(
             isLoading: false
           }));
           useNotificationStore.getState().addNotification(
-            'Transaction Added', 
+            'Transaction Added',
             `${transaction.type === 'Income' ? '+$' : '-$'}${transaction.amount} for ${transaction.category}`
           );
         } catch (error) {
-           console.error("Failed to add:", error);
-           set({ isLoading: false });
+          console.error("Failed to add:", error);
+          set({ isLoading: false });
         }
       },
 
@@ -66,12 +66,12 @@ export const useFinanceStore = create(
             isLoading: false
           }));
           useNotificationStore.getState().addNotification(
-            'Transaction Updated', 
+            'Transaction Updated',
             `Successfully modified "${updated.description}"`
           );
         } catch (error) {
-           console.error("Failed to update:", error);
-           set({ isLoading: false });
+          console.error("Failed to update:", error);
+          set({ isLoading: false });
         }
       },
 
@@ -84,7 +84,7 @@ export const useFinanceStore = create(
             isLoading: false
           }));
           useNotificationStore.getState().addNotification(
-            'Transaction Deleted', 
+            'Transaction Deleted',
             'The record has been permanently removed.'
           );
         } catch (error) {
